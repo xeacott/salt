@@ -117,6 +117,7 @@ class PipStateTest(TestCase, SaltReturnAssertsMixin, LoaderModuleMockMixin):
                         'Python package pep8>1.3.1,<1.3.3 is set to be installed',
                         {'test': ret}
                     )
+                    self.assertTrue(False)
 
             mock = MagicMock(return_value={'retcode': 0, 'stdout': ''})
             pip_list = MagicMock(return_value={'pep8': '1.3.1'})
