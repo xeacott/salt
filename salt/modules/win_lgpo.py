@@ -5544,9 +5544,14 @@ def _getAdmlPresentationRefId(adml_data, ref_id):
                         else:
                             if etree.QName(p_item.tag).localname == 'text':
                                 if prepended_text:
-                                    prepended_text = ' '.join((text for text in (prepended_text, getattr(p_item, 'text', '').rstrip()) if text))
+                                    prepended_text = ' '.join(
+                                        (text for text in (prepended_text, getattr(
+                                        p_item, 'text', '').rstrip() if getattr(
+                                        p_item, 'text', '') else '') if text))
                                 else:
-                                    prepended_text = getattr(p_item, 'text', '').rstrip()
+                                    prepended_text = getattr(
+                                        p_item, 'text', '').rstrip() if getattr(
+                                        p_item, 'text', '') else ''
                             else:
                                 prepended_text = ''
                     if prepended_text.endswith('.'):
