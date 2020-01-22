@@ -5,15 +5,9 @@ Execution of Salt modules from within states
 
 .. note::
 
-    There are two styles of calling ``module.run``. **The legacy style will no
-    longer be available starting in the Sodium release.** To opt-in early to the
-    new style you must add the following to your ``/etc/salt/minion`` config
-    file:
+    There are two styles of calling ``module.run``. The documentation here
+    describes both instances, whereas the `new` style is the preferred style.
 
-    .. code-block:: yaml
-
-        use_superseded:
-          - module.run
 
 With `module.run` these states allow individual execution module calls to be
 made via states. Here's a contrived example, to show you how it's done:
@@ -346,7 +340,18 @@ def wait(name, **kwargs):
 watch = salt.utils.functools.alias_function(wait, 'watch')
 
 
-@with_deprecated(globals(), "Sodium", policy=with_deprecated.OPT_IN)
+def parse_run(**kwargs):
+    '''
+    Determine which style of module.run states to execute.
+
+    Two styles of states are capable of executing, new style and legacy style.
+    Since both are supported, this method serves as a wrapper around module.run
+    to determine which style to execute.
+    :param kwargs:
+    :return:
+    '''
+
+
 def run(**kwargs):
     '''
     Run a single module function or a range of module functions in a batch.
