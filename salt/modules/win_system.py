@@ -13,11 +13,7 @@ Support for reboot, shutdown, join domain, rename
 from __future__ import absolute_import, print_function, unicode_literals
 
 # Import Python libs
-import ctypes
 import logging
-import platform
-import time
-from datetime import datetime
 
 # Import salt libs
 import salt.utils.functools
@@ -25,15 +21,11 @@ import salt.utils.locales
 import salt.utils.platform
 import salt.utils.win_system
 import salt.utils.winapi
-from salt.exceptions import CommandExecutionError
-from salt.ext import six
 
 try:
     import pywintypes
-    import win32api
     import win32con
     import win32net
-    import wmi
     from ctypes import windll
 
     HAS_WIN32NET_MODS = True
