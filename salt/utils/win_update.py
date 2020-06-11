@@ -1070,27 +1070,3 @@ class WindowsUpdateAgent(object):
             log.debug("Command Failed: %s", " ".join(cmd))
             log.debug("Error: %s", exc)
             raise CommandExecutionError(exc)
-
-
-def needs_reboot():
-    """
-    Determines if the system needs to be rebooted.
-
-    Returns:
-
-        bool: ``True`` if the system requires a reboot, ``False`` if not
-
-    CLI Examples:
-
-    .. code-block:: bash
-
-        import salt.utils.win_update
-
-        salt.utils.win_update.needs_reboot()
-
-    """
-    # Initialize the PyCom system
-    with salt.utils.winapi.Com():
-        # Create an AutoUpdate object
-        obj_sys = win32com.client.Dispatch("Microsoft.Update.SystemInfo")
-        return salt.utils.data.is_true(obj_sys.RebootRequired)

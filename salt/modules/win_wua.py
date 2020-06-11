@@ -62,6 +62,7 @@ import logging
 
 # Import Salt libs
 import salt.utils.platform
+import salt.utils.win_system
 import salt.utils.win_update
 import salt.utils.winapi
 from salt.exceptions import CommandExecutionError
@@ -367,6 +368,7 @@ def list(
     download=False,
     install=False,
     online=True,
+    auto_reboot=False
 ):
     """
     .. versionadded:: 2017.7.0
@@ -521,6 +523,9 @@ def list(
 
     if not ret:
         return updates.summary() if summary else updates.list()
+
+    if salt.utils.win_system.get_pending_reboot_details() and auto_reboot is True:
+        salt.utils.win_system.reboot()
 
     return ret
 
@@ -1120,20 +1125,3 @@ def _get_msupdate_status():
                 return True
 
     return False
-
-
-def get_needs_reboot():
-    """
-    Determines if the system needs to be rebooted.
-
-    Returns:
-
-        bool: ``True`` if the system requires a reboot, otherwise ``False``
-
-    CLI Examples:
-
-    .. code-block:: bash
-
-        salt '*' win_wua.get_needs_reboot
-    """
-    return salt.utils.win_update.needs_reboot()

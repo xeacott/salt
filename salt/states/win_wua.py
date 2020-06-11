@@ -56,6 +56,7 @@ import logging
 
 import salt.utils.data
 import salt.utils.platform
+import salt.utils.win_system
 import salt.utils.win_update
 
 # Import Salt libs
@@ -79,7 +80,7 @@ def __virtual__():
     return __virtualname__
 
 
-def installed(name, updates=None):
+def installed(name, updates=None, auto_reboot=False):
     """
     Ensure Microsoft Updates are installed. Updates will be downloaded if
     needed.
@@ -92,6 +93,10 @@ def installed(name, updates=None):
         updates (list):
             A list of identifiers for updates to be installed. Overrides
             ``name``. Default is None.
+
+        auto_reboot (bool):
+            Switch to control automatically rebooting a system after an
+            install.
 
     .. note:: Identifiers can be the GUID, the KB number, or any part of the
        Title of the Microsoft update. GUIDs and KBs are the preferred method
@@ -210,10 +215,13 @@ def installed(name, updates=None):
     else:
         ret["comment"] = "Updates installed successfully"
 
+    if salt.utils.win_system.get_pending_reboot_details() and auto_reboot is True:
+        salt.utils.win_system.reboot()
+
     return ret
 
 
-def removed(name, updates=None):
+def removed(name, updates=None, auto_reboot=False):
     """
     Ensure Microsoft Updates are uninstalled.
 
@@ -334,6 +342,9 @@ def removed(name, updates=None):
     else:
         ret["comment"] = "Updates removed successfully"
 
+    if salt.utils.win_system.get_pending_reboot_details() and auto_reboot is True:
+        salt.utils.win_system.reboot()
+
     return ret
 
 
@@ -346,6 +357,7 @@ def uptodate(
     skip_reboot=True,
     categories=None,
     severities=None,
+    auto_reboot=False
 ):
     """
     Ensure Microsoft Updates that match the passed criteria are installed.
@@ -403,7 +415,9 @@ def uptodate(
 
             * Critical
             * Important
-
+        auto_reboot (bool):
+            Switch to specify if the system will automatically reboot after an
+            install that requires a reboot.
 
     Returns:
         dict: A dictionary containing the results of the update
@@ -524,5 +538,8 @@ def uptodate(
         ret["comment"] = "Updates failed"
     else:
         ret["comment"] = "Updates installed successfully"
+
+    if salt.utils.win_system.get_pending_reboot_details() and auto_reboot is True:
+        salt.utils.win_system.reboot()
 
     return ret
