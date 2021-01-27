@@ -10,7 +10,9 @@ import re
 import string
 
 import salt.utils.stringutils
+import salt.utils.platform
 from salt.exceptions import CommandExecutionError, SaltInvocationError
+
 
 try:
     try:
@@ -52,17 +54,18 @@ def secure_password(length=20, use_random=True):
             if HAS_RANDOM and use_random:
                 while True:
                     try:
-                        char = salt.utils.stringutils.to_str(get_random_bytes(1))
+                        char = salt.utils.stringutils.to_str(get_random_bytes(1), encoding='UTF-8')
                         break
                     except UnicodeDecodeError:
                         continue
                 pw += re.sub(
-                    salt.utils.stringutils.to_str(r"[\W_]"),
+                    salt.utils.stringutils.to_str(r"[\W_]", encoding='UTF-8'),
                     "",  # future lint: disable=blacklisted-function
                     char,
                 )
             else:
                 pw += random.SystemRandom().choice(string.ascii_letters + string.digits)
+
         return pw
     except Exception as exc:  # pylint: disable=broad-except
         log.exception("Failed to generate secure passsword")
