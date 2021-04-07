@@ -2605,6 +2605,7 @@ class State:
         Look into the running data to check the status of all requisite
         states
         """
+        log.error(f"This is low data {low}")
         disabled_reqs = self.opts.get("disabled_requisites", [])
         if not isinstance(disabled_reqs, list):
             disabled_reqs = [disabled_reqs]
@@ -2626,6 +2627,7 @@ class State:
                     low["require_any"] = low.pop("watch_any")
             else:
                 present = True
+
         if "require" in low:
             present = True
         if "require_any" in low:
@@ -2712,7 +2714,9 @@ class State:
                     if not found:
                         return "unmet", ()
         fun_stats = set()
+        log.error("\n\n HI \n\n")
         for r_state, chunks in reqs.items():
+            log.error(f" here is r_state and chunks{r_state} {chunks}")
             req_stats = set()
             if r_state.startswith("prereq") and not r_state.startswith("prerequired"):
                 run_dict = self.pre
@@ -2798,6 +2802,8 @@ class State:
             status = "onchanges"
         elif "change" in fun_stats:
             status = "change"
+        elif "onfail" in fun_stats:
+            status = "onfail"
         else:
             status = "met"
 
