@@ -424,7 +424,11 @@ def _run(
         if isinstance(cmd, (list, tuple)):
             cmd = " ".join(cmd)
 
-        return win_runas(cmd, runas, password, cwd)
+        pid, retcode, stdout, stderr = win_runas(cmd, runas, password, cwd)
+        ret["pid"] = pid
+        ret["retcode"] = retcode
+        ret["stdout"] = stdout
+        ret["stderror"] = stderr
 
     if runas and salt.utils.platform.is_darwin():
         # We need to insert the user simulation into the command itself and not
@@ -457,7 +461,7 @@ def _run(
         # hang.
         runas = None
 
-    if runas:
+    if runas and not salt.utils.platform.is_windows():
         # Save the original command before munging it
         try:
             pwd.getpwnam(runas)
