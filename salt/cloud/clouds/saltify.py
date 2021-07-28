@@ -29,15 +29,6 @@ log = logging.getLogger(__name__)
 
 try:
     # noinspection PyUnresolvedReferences
-    from impacket.smbconnection import SessionError as smbSessionError
-    from impacket.smb3 import SessionError as smb3SessionError
-
-    HAS_IMPACKET = True
-except ImportError:
-    HAS_IMPACKET = False
-
-try:
-    # noinspection PyUnresolvedReferences
     from winrm.exceptions import WinRMTransportError
 
     # noinspection PyUnresolvedReferences
@@ -337,10 +328,6 @@ def _verify(vm_):
     if win_installer:
 
         log.debug("Testing Windows authentication method for %s", vm_["name"])
-
-        if not HAS_IMPACKET:
-            log.error("Impacket library not found")
-            return False
 
         # Test Windows connection
         kwargs = {
